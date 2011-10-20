@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
-
-require 'logger'
-require 'mechanize'
+require 'net/http'
+require 'nokogiri'
 require "consulta_cep/version"
 
 module ConsultaCep
@@ -14,26 +13,19 @@ module ConsultaCep
       'Recanto', 'Residencial', 'Rodovia', 'Rua', 'Setor', 'Sítio', 'Travessa', 'Trecho', 'Trevo', 'Vale', 'Vereda', 'Via', 'Viaduto', 'Viela', 'Vila'
     ]
 
-    def initialize
-      @agent = Mechanize.new#{ |a| a.log = Logger.new(STDERR) }
-      @agent.user_agent_alias = 'Windows IE 7'
-      @last_page = @agent.get 'http://correios.com.br'
-      sleep 0.1
-    end
-
     def cep(cep)
-      @last_page = @agent.post 'http://www.buscacep.correios.com.br/servicos/dnec/consultaLogradouroAction.do',
+      page = request_page 'http://www.buscacep.correios.com.br/servicos/dnec/consultaLogradouroAction.do',
         :EndRow       => 10,
         :Metodo       => 'listaLogradouro',
         :StartRow     => 1,
         :TipoConsulta => 'cep',
         :CEP          => cep
 
-      parse_lista @last_page
+      parse_lista page
     end
 
     def endereco(endereco)
-      @last_page = @agent.post 'http://www.buscacep.correios.com.br/servicos/dnec/consultaLogradouroAction.do',
+      page = request_page 'http://www.buscacep.correios.com.br/servicos/dnec/consultaLogradouroAction.do',
         :EndRow       => 10,
         :Metodo       => 'listaLogradouro',
         :StartRow     => 1,
@@ -43,11 +35,11 @@ module ConsultaCep
         :relaxation   => endereco,
         :semelhante   => 'S'
 
-      parse_lista @last_page
+      parse_lista page
     end
 
     def endereco_refinado(endereco, params)
-      @last_page = @agent.post 'http://www.buscacep.correios.com.br/servicos/dnec/consultaLogradouroAction.do',
+      page = request_page 'http://www.buscacep.correios.com.br/servicos/dnec/consultaLogradouroAction.do',
         :EndRow       => 10,
         :Localidade   => params[:cidade],
         :Logradouro   => endereco,
@@ -59,7 +51,7 @@ module ConsultaCep
         :UF           => params[:estado],
         :cfm          => 1
 
-      parse_lista @last_page
+      parse_lista page
     end
 
     def self.cep(cep_number)
@@ -75,6 +67,10 @@ module ConsultaCep
     end
 
     protected
+    def request_page(url, params)
+      Nokogiri.parse Net::HTTP.post_form(URI.parse(url), params).body
+    end
+
     def parse_lista(page)
       elements = []
       page.search('tr[@onclick]').each do |row|
