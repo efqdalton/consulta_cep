@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require 'rubygems'
+require 'consulta_cep'
+
+ConsultaCep::Consulta.cep(ARGV[0]).each do |endereco|
+  output = [
+    "ENDEREÇO: #{endereco[:endereco]}",
+    "BAIRRO:   #{endereco[:bairro  ]}",
+    "CIDADE:   #{endereco[:cidade  ]}",
+    "ESTADO:   #{endereco[:estado  ]}",
+    "CEP:      #{endereco[:cep     ]}\n\n"
+  ].join("\n")
+  
+  puts output
+end

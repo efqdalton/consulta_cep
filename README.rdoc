@@ -1,0 +1,16 @@
+== ConsultaCep
+
+Uma gem bem simples pra fazer busca de endereços no site brasileiro dos correios.
+
+== Example
+
+  include ConsultaCep
+
+  # Procurando dados por cep
+  Consulta.cep '12228-462'
+
+  # Procurando dados por endereço
+  Consulta.endereco 'Avenida Paulista, São Paulo'
+
+  # Procurando dados por endereço refinado
+  Consulta.endereco 'Avenida Paulista', :cidade => 'São Paulo', :estado => 'SP'
