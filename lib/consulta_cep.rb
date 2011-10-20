@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+
+require 'logger'
 require 'mechanize'
 require "consulta_cep/version"
 
@@ -12,9 +15,10 @@ module ConsultaCep
     ]
 
     def initialize
-      @agent = Mechanize.new
+      @agent = Mechanize.new{ |a| a.log = Logger.new(STDERR) }
       @agent.user_agent_alias = 'Windows IE 7'
       @last_page = @agent.get 'http://correios.com.br'
+      sleep 0.1
     end
 
     def cep(cep)
