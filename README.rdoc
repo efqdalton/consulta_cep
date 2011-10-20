@@ -13,4 +13,4 @@ Uma gem bem simples pra fazer busca de endereços no site brasileiro dos correio
   Consulta.endereco 'Avenida Paulista, São Paulo'
 
   # Procurando dados por endereço refinado
-  Consulta.endereco 'Avenida Paulista', :cidade => 'São Paulo', :estado => 'SP'
+  Consulta.endereco_refinado 'Avenida Paulista', :cidade => 'São Paulo', :estado => 'SP'
