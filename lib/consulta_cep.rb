@@ -92,9 +92,3 @@ module ConsultaCep
     end
   end
 end
-
-include ConsultaCep
-
-Consulta.cep '12228462'
-Consulta.endereco 'Rua Alice Costa, 39'
-Consulta.endereco_refinado 'H8C', :cidade => 'São José dos Campos', :estado => 'SP'
