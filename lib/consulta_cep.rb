@@ -68,6 +68,7 @@ module ConsultaCep
 
     protected
     def request_page(url, params)
+      url = URI.encode(url)
       Nokogiri.parse Net::HTTP.post_form(URI.parse(url), params).body
     end
 
